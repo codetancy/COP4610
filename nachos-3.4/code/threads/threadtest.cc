@@ -63,7 +63,29 @@ void SimpleThread(int which)
     val = SharedVariable;
     printf("Thread %d sees final value %d\n", which, val);
 }
-
+#elif defined (HW1_LOCKS)
+int SharedVariable, count;
+Lock *l = new Lock("lock loop");
+Lock *b = new Lock("lock barrier");
+void SimpleThread(int which) {
+	int num, val;
+	b->Acquire();
+	count++;
+	b->Release();
+	for(num = 0; num < 5; num++) {
+		l->Acquire();
+		val = SharedVariable;
+		printf("*** thread %d sees value %d\n", which, val);
+		currentThread->Yield();
+		SharedVariable = val+1;
+		l->Release();
+		currentThread->Yield();
+    }
+	while(SharedVariable < 5*count)
+		currentThread->Yield();
+	val = SharedVariable;
+	printf("Thread %d sees final value %d\n", which, val);
+}
 #else
 int SharedVariable;
 void SimpleThread(int which)
