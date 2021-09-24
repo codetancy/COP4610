@@ -60,8 +60,10 @@ extern int testnum;
 // External functions used by this file
 #if defined(CHANGED) && defined(THREADS)
 extern void ThreadTest(int n), Copy(char *unixFile, char *nachosFile);
+extern void Elevator(int numFloors);
+extern void ArrivingGoingFromTo(int atFloor, int toFloor);
 #else
-extern void ThreadTest(), Copy(char *unixFile, char *nachosFile);
+extern void ThreadTest(void), Copy(char *unixFile, char *nachosFile);
 #endif
 
 extern void Print(char *file), PerformanceTest(void);
@@ -92,28 +94,6 @@ main(int argc, char **argv)
     (void) Initialize(argc, argv);
     
 #ifdef THREADS
-
-#if defined(CHANGED)
-    int numThreads;
-    for (argc--, argv++; argc > 0; argc -= argCount, argv += argCount) {
-      argCount = 1;
-      switch (argv[0][1]) {
-      case 'q':
-        testnum = atoi(argv[1]);
-        argCount++;
-        break;
-      case 'a':
-        numThreads = atoi(argv[1]);
-        argCount++;
-        break;
-      default:
-        testnum = 1;
-        numThreads = 0;
-        break;
-      }
-    }
-    ThreadTest(numThreads);
-#else
     for (argc--, argv++; argc > 0; argc -= argCount, argv += argCount) {
       argCount = 1;
       switch (argv[0][1]) {
@@ -126,9 +106,19 @@ main(int argc, char **argv)
         break;
       }
     }
-    ThreadTest();
-#endif
-
+    
+	#if defined(CHANGED)
+	#if defined(HW1_ELEVATOR)
+	int numFloors = 4;
+	Elevator(numFloors);
+	ArrivingGoingFromTo(1,2);
+	#else
+	int numThreads = 4;
+	ThreadTest(numThreads);
+	#endif
+	#else
+	ThreadTest();
+	#endif
 #endif
 
     for (argc--, argv++; argc > 0; argc -= argCount, argv += argCount) {
