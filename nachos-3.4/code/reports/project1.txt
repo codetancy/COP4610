@@ -57,3 +57,8 @@ Methods Implemented/Created: ArrivingGoingFromTo(int atFloor, int toFloor), Elev
     
 
 Malcolm Verdier:
+Implemented nachos debug in all code written to make sure it was easier to find sources of error
+Modified threadtest() and Simplethread() in the threadtest.cc file to have multiple threads
+Implemented locks and modifiing when it will free and when it be sleep using lock:aquire() and lock:release()
+
+
