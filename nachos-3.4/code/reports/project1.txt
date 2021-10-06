@@ -1,4 +1,4 @@
-Exercise 1 and Exercise 2:
+Exercise 1:
 
 When running SimpleThread without synchronization and without random interrupts, each thread stores 
 the shared value in a temporary variable, and then the thread is placed at the end of the ready queue. 
@@ -16,28 +16,22 @@ shared value is incremented. The result being that, despite whether threads are 
 interrupts, we are not dealing with multiple copies of the shared variable. Ultimately, the result is each 
 thread increasing the shared value five times independently.
 
-For exercise 1 we implemented using Semaphores and for exercise 2 we implemented using Locks.
-
-Exercise 3: We completed the code for the condition variable methods. We also incorporated the condition variables in the SimpleThreadTest.
-
-Exercise 4: We decided to use semaphores and condition variables in this exercise. The following methods were conducted: 
-    1. ArrivingGoingFromTo(int atFloor, int toFloor): First make sure requirements are meet (max capacity is 5). Declare and initialize a PersonThread object, using the parameters and set a uique id. Create an thread for person. Once ready, fork person thread. Conduct Simulation.
-    2. Elevator(int numFloors):  First make sure requiremnts are meet (must have +1 floors). Declare and initialize an ElevatorThread object, using the parameters. Default current floor starts at ground floor(0) and contains no people. Create n thread for the elevator. Once ready, fork elevator thread. Conduct simulation. 
-    3. Person(int person): This test uses Semaphores and condition variables. Conducts the simulation for the person threads. 
-    4. generateID(): creates a unique id.
-    5. Manager(int which): Conducts the thread test for the elevator.
-    6. ManagerHelper(int *inQueue, int *outQueue): helps the elevator thread make certain decisions. 
 
 Provide descriptions of which excercises you have been able to complete. 
 Discuss the ones that are incomplete, what is their current status.
 
-We were able to complete all the exercises (1-4) and got them to run as expected
+Exercise 1: Completed. We modified ThreadTest to fork n new threads and implemented SimpleThread with and without synchronization using Semaphores
+Exercise 2: Completed. We implemented Locks and tested implementation on SimpleThread
+Exercise 3: Completed. We completed the code for the condition variable methods
+Exercise 4: Completed. We implemented elevator functionality following all constraints usings structs and methods and added synchronization between the elevator thread and all the person threads using semaphores, locks, and condition variables
+
 
 Contributions:
 
 Juan Arias:
 Analyzed and explained the results of SimpleThread before the introduction of semaphore for exercise 1.
 Implemented Locks and Conditions for exercises 2 and 3.
+Implemented the Locks for SimpleThread in exercise 2
 Added the logic that allows threads to be synchronized and allows the elevator to work as expected for exercise 4.
 
 Franklin Bello:
@@ -52,9 +46,9 @@ Tested the following scenarios for exercise 4:
 
 Peter Llerena:
 
-Alexis Powell: Established and created the ArrivingGoingToFrom and Elevator methods. 
+Alexis Powell:
+Established and created the ArrivingGoingToFrom and Elevator methods. 
 Methods Implemented/Contributed: ArrivingGoingFromTo(int atFloor, int toFloor), Elevator(int numFloors), contributed to the Person method to test the PersonThreads ,and generateID(). 
-
 
 Malcolm Verdier:
 Implemented nachos debug in all code written to make sure it was easier to find sources of error
