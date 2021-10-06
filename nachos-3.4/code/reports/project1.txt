@@ -1,6 +1,16 @@
+Exercise 1:
+When running SimpleThread, the threads increment the shared variable five times. However, since there is no synchronization, they obtain outdated information of the variable, so each thread increments the variable without waiting for the others. The result is that each thread increases the value of the shared variable from 0 to 5 independently
+
+
 Provide descriptions of which excercises you have been able to complete. Discuss the ones that are incomplete, what is their current status.
 
-Juan Arias
+We were able to complete all the exercises (1-4) and got them to run as expected
+
+
+Contributions:
+
+Juan Arias:
+Analyzed and explained the results of SimpleThread before the introduction of semaphore for exercise 1. Implemented Locks and Conditions for exercises 2 and 3. Added the logic that allows threads to be synchronized and allows the elevator to work as expected for exercise 4.
 
 Franklin Bello:
 
