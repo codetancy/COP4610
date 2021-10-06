@@ -45,6 +45,8 @@ Tested the following scenarios for exercise 4:
     5. Going down when full
 
 Peter Llerena:
+Exercise 1: implemented semaphore and barrier to receive the correct output
+Exercise 2: Implemented the lock operations and ran test by replacing semaphore from exercise 1 with lock operations in SimpleThread
 
 Alexis Powell:
 Established and created the ArrivingGoingToFrom and Elevator methods. 
