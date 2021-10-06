@@ -109,9 +109,33 @@ main(int argc, char **argv)
     
 	#if defined(CHANGED)
 	#if defined(HW1_ELEVATOR)
-	int numFloors = 4;
+	int numFloors = 10;
 	Elevator(numFloors);
-	ArrivingGoingFromTo(1,2);
+	ArrivingGoingFromTo(1,3);
+	ArrivingGoingFromTo(9,8);
+	ArrivingGoingFromTo(5,10);
+	ArrivingGoingFromTo(3,2);
+	ArrivingGoingFromTo(8,7);
+	ArrivingGoingFromTo(7,3);
+	ArrivingGoingFromTo(10,1);
+	ArrivingGoingFromTo(5,10);
+	ArrivingGoingFromTo(4,4);
+	ArrivingGoingFromTo(2,10);
+	ArrivingGoingFromTo(3,2);
+	ArrivingGoingFromTo(1,4);
+	ArrivingGoingFromTo(2,5);
+	ArrivingGoingFromTo(9,2);
+	ArrivingGoingFromTo(6,1);
+	ArrivingGoingFromTo(8,10);
+	ArrivingGoingFromTo(4,8);
+	ArrivingGoingFromTo(10,2);
+	ArrivingGoingFromTo(4,5);
+	ArrivingGoingFromTo(4,10);
+	ArrivingGoingFromTo(8,1);
+	ArrivingGoingFromTo(2,8);
+	ArrivingGoingFromTo(1,4);
+	ArrivingGoingFromTo(10,7);
+	ArrivingGoingFromTo(6,6);
 	#else
 	int numThreads = 4;
 	ThreadTest(numThreads);
