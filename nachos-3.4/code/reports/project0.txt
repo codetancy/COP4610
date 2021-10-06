@@ -1,0 +1,28 @@
+Alexis Powell
+a) It was difficult to initially install the nachos files, because I wasn’t familiar with ocelot or nachos server. After loading the files, it was easy to run nachos.
+b) After executing the second portion of the test demo, the program showcased the lists of machine registers and gave information about pending interrupters.
+c) After executing the thread class, it showed that there were two threads that ran five times simultaneously
+
+
+Franklin Bello Romero
+a) Installing Nachos was very straightforward. Luckily, I was already familiar with ocelot and Putty from my Systems Programming class, so I didn’t have a rough time setting it up.
+b) I didn’t encounter any issue whatsoever testing
+c) The tests from the threads displayed the expected output.
+
+
+Juan Arias
+a) I was somewhat confused installing NACHOS because I did not know where to start. After all, the video used nachos.cs.fiu.edu, while the instruction said to connect to nachos.aul.fiu.edu. However, one of the resources mentioned using ocelot, which I used. Once I was in ocelot, I unpacked and compiled nachos following the instructions, and everything worked out as expected.
+b) I had no trouble running the test. I ran the threads, userprog, and single-step mode demo, and the output was the expected output. I do not fully understand the complete details of the tests, so I have to review them some more.
+c) The thread class uses a set of functions like fork, finish, yield, and sleep to manage threads. One of the most important ones is fork since it creates the threads that run procedures.
+
+
+Malcolm Verdier
+a) I had experience with putty and ocelot before so that wasn't the hard part but I felt the instructions were a little confusing and all over the place with nachos. 
+b) Test all went smoothly as how it was supposed to show
+c) The threads showed properly like the example given in the instructions, all numbers were accurate and the structure was accurate.
+
+
+Peter Llerena
+a) The experience was smooth however I needed to get info from other students. The videos and the directions directly from the project were slightly confusing and not very clear to understand.
+b) After correcting a few simple errors on my end I was able to run all the tests smoothly and it ran as it should.
+c) The threads looped as many times as necessary to see that there were no threads runnable and the program completed.
