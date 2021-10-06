@@ -1,18 +1,48 @@
-Exercise 1:
-When running SimpleThread, the threads increment the shared variable five times. However, since there is no synchronization, they obtain outdated information of the variable, so each thread increments the variable without waiting for the others. The result is that each thread increases the value of the shared variable from 0 to 5 independently
+Exercise 1 and Exercise 2:
 
+When running SimpleThread without synchronization and without random interrupts, each thread stores 
+the shared value in a temporary variable, and then the thread is placed at the end of the ready queue. 
+Once every thread have its own copy of the shared value, the temporary variable is incremented and 
+reassigned to the shared value. Then the thread is placed back again at the end of the ready queue. 
+Ultimately, the result is every thread seeing the same value on every iteration.
 
-Provide descriptions of which excercises you have been able to complete. Discuss the ones that are incomplete, what is their current status.
+However, this naive approach becomes an issue when running with random interrupts, because the interrupted thread 
+is not placed in the ready queue at the same time as the uninterrupted threads. So when the uninterrupted threads 
+are starting the second iteration, the interrupted is waiting to increment the shared variable. Suddenly, the 
+local copy of the shared value in the interrupted thread becomes obsolete, leading to inconsistent increments. 
+
+The solution to this is to add synchronization before each thread stores the shared variable and resume after the
+shared value is incremented. The result being that, despite whether threads are on different iterations because of
+interrupts, we are not dealing with multiple copies of the shared variable. Ultimately, the result is each 
+thread increasing the shared value five times independently.
+
+For exercise 1 we implemented using Semaphores and for exercise 2 we implemented using Locks.
+
+Exercise 3:
+
+Exercise 4:
+
+Provide descriptions of which excercises you have been able to complete. 
+Discuss the ones that are incomplete, what is their current status.
 
 We were able to complete all the exercises (1-4) and got them to run as expected
-
 
 Contributions:
 
 Juan Arias:
-Analyzed and explained the results of SimpleThread before the introduction of semaphore for exercise 1. Implemented Locks and Conditions for exercises 2 and 3. Added the logic that allows threads to be synchronized and allows the elevator to work as expected for exercise 4.
+Analyzed and explained the results of SimpleThread before the introduction of semaphore for exercise 1.
+Implemented Locks and Conditions for exercises 2 and 3.
+Added the logic that allows threads to be synchronized and allows the elevator to work as expected for exercise 4.
 
 Franklin Bello:
+Implemented the Semaphore and Barriers for exercise 1.
+Explained the implementation of SimpleThreads before and after introducing semaphores for exercise 1.
+Tested the following scenarios for exercise 4:
+    1. Going up
+    2. Going down
+    3. Same floor
+    4. Going up when full
+    5. Going down when full
 
 Peter Llerena:
 
