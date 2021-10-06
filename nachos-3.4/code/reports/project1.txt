@@ -18,9 +18,14 @@ thread increasing the shared value five times independently.
 
 For exercise 1 we implemented using Semaphores and for exercise 2 we implemented using Locks.
 
-Exercise 3:
+Exercise 3: We completed the code for the condition variables. We also incorporated the condition variables in the SimpleThreadTest.
 
-Exercise 4:
+Exercise 4: We decided to use semaphores in this exercise. The following methods were conducted: 
+    1. ArrivingGoingFromTo(int atFloor, int toFloor): First make sure requiremnts are meet (max capacity is 5). Declare and initialize a PersonThread object, using the parameters and set a uique id. Create an thread for person. Once ready, fork person thread. Conduct Simulation.
+    2. Elevator(int numFloors):  First make sure requiremnts are meet (must have +1 floors). Declare and initialize an ElevatorThread object, using the parameters. Default current floor starts at ground floor(0) and contains no people. Create n thread for the elevator. Once ready, fork elevator thread. Conduct simulation. 
+    3. ArrivingGoingFromToTest(int p): Person object is passed through. This test uses Semaphores
+    4. generateID(): creates a unique id.
+    5. 
 
 Provide descriptions of which excercises you have been able to complete. 
 Discuss the ones that are incomplete, what is their current status.
@@ -46,6 +51,9 @@ Tested the following scenarios for exercise 4:
 
 Peter Llerena:
 
-Alexis Powell:
+Alexis Powell: Established the ArrivingGoingToFrom and Elevator methods. Implemented the ArrivingGoingFromToTest to test the person threads. The implementation for the elevator thread test was implemented by Juan. 
+Methods Implemented/Created: ArrivingGoingFromTo(int atFloor, int toFloor), Elevator(int numFloors), ArrivingGoingFromToTest(int p), and  generateID(). I used Semaphores to conduct the person thread test. 
+
+    
 
 Malcolm Verdier:
