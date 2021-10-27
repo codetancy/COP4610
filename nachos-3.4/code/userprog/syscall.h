@@ -124,6 +124,10 @@ void Fork(void (*func)());
  */
 void Yield();		
 
+/* Kill Method
+* 
+*/
+int Kill(SpaceId id); 
 #endif /* IN_ASM */
 
 #endif /* SYSCALL_H */
