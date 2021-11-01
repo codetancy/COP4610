@@ -53,6 +53,52 @@ ExceptionHandler(ExceptionType which)
 {
     int type = machine->ReadRegister(2);
 
+   
+ /* Make System Calls*/
+    if ((which == SyscallException)){
+        switch(type){
+            /*FIXME: Make edits to each system call to work successfully*/
+            case SC_Fork:
+                DEBUG('a', "Fork, initiated by user program.\n");
+                break;
+
+            case SC_Yield:
+                DEBUG('a', "Yield, initiated by user program.\n");
+                break;
+
+            case SC_Exec:
+                DEBUG('a', "Exec, initiated by user program.\n");
+                break;
+
+            case SC_Join:
+                DEBUG('a', "Join, initiated by user program.\n");
+                break;
+
+            case SC_Exit:
+                DEBUG('a', "Exit, initiated by user program.\n");
+                break;
+
+            case SC_Kill:
+                DEBUG('a', "Kill, initiated by user program.\n");
+                break;
+
+            default: //default -- halt
+                DEBUG('a', "Shutdown, initiated by user program.\n");
+                    interrupt->Halt();
+                break;
+        }// end of switch case
+    } else {
+	printf("Unexpected user mode exception %d %d\n", which, type);
+	ASSERT(FALSE);
+    }
+}
+
+/* Original ExceptionHandler
+void
+ExceptionHandler(ExceptionType which)
+{
+    int type = machine->ReadRegister(2);
+
     if ((which == SyscallException) && (type == SC_Halt)) {
 	DEBUG('a', "Shutdown, initiated by user program.\n");
    	interrupt->Halt();
@@ -61,3 +107,4 @@ ExceptionHandler(ExceptionType which)
 	ASSERT(FALSE);
     }
 }
+*/
