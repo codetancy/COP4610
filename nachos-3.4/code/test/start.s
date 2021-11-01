@@ -129,6 +129,14 @@ Yield:
 	syscall
 	j	$31
 	.end Yield
+	
+	.global Kill
+        .ent    Kill
+Kill:
+        addiu $2, $0, SC_Kill
+        syscall
+        j       $31
+        .end Kill
 
 /* dummy function to keep gcc happy */
         .globl  __main
