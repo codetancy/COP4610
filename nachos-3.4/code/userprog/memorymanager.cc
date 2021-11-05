@@ -45,3 +45,15 @@ void MemoryManager::clearPage(int pageId){
 	virtMem->Clear(pageId); //Clear the bit
 	lock->Release();
 }
+
+//----------------------------------------------------------------------
+// MemoryManager::getFree
+// 	Return number of free pages
+//----------------------------------------------------------------------
+
+int MemoryManager::getFree(){
+	lock->Acquire();
+	int numFree = virtMem->numClear(); //find and allocate a bit
+	lock->Release();
+	return numFree;
+}

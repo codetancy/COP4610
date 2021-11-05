@@ -78,10 +78,14 @@ AddrSpace::AddrSpace(OpenFile *executable)
     numPages = divRoundUp(size, PageSize);
     size = numPages * PageSize;
 
-    ASSERT(numPages <= NumPhysPages);		// check we're not trying
+#ifdef CHANGED
+	ASSERT(numPages <= memoryManager->getFree()); //Check there are enough pages
+#else
+	ASSERT(numPages <= NumPhysPages);		// check we're not trying
 						// to run anything too big --
 						// at least until we have
 						// virtual memory
+#endif
 
     DEBUG('a', "Initializing address space, num pages %d, size %d\n", 
 					numPages, size);
@@ -89,18 +93,26 @@ AddrSpace::AddrSpace(OpenFile *executable)
     pageTable = new TranslationEntry[numPages];
     for (i = 0; i < numPages; i++) {
 	pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
+#ifdef CHANGED
+	pageTable[i].physicalPage = memoryManager->getPage();
+#else
 	pageTable[i].physicalPage = i;
+#endif
 	pageTable[i].valid = TRUE;
 	pageTable[i].use = FALSE;
 	pageTable[i].dirty = FALSE;
 	pageTable[i].readOnly = FALSE;  // if the code segment was entirely on 
 					// a separate page, we could set its 
 					// pages to be read-only
+#ifdef CHANGED
+	bzero(machine->mainMemory + pageTable[i].physicalPage*PageSize, PageSize);
     }
-    
+#else
+	}
 // zero out the entire address space, to zero the unitialized data segment 
 // and the stack segment
     bzero(machine->mainMemory, size);
+#endif
 
 // then, copy in the code and data segments into memory
     if (noffH.code.size > 0) {
