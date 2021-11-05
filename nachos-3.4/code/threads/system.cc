@@ -31,6 +31,7 @@ SynchDisk   *synchDisk;
 Machine *machine;	// user program memory and registers
 #ifdef CHANGED
 MemoryManager* memoryManager;
+ProcessManager* processManager;
 #endif
 #endif
 
@@ -154,6 +155,7 @@ Initialize(int argc, char **argv)
     machine = new Machine(debugUserProg);	// this must come first
 #ifdef CHANGED
 	memoryManager = new MemoryManager(32);
+	processManager = new ProcessManager(10);
 #endif
 #endif
 
@@ -186,6 +188,7 @@ Cleanup()
     delete machine;
 #ifdef CHANGED
 	delete memoryManager;
+	delete processManager;
 #endif
 #endif
 

@@ -15,6 +15,9 @@
 
 #include "copyright.h"
 #include "filesys.h"
+#if defined(CHANGED)
+#include "pcb.h"
+#endif
 
 #define UserStackSize		1024 	// increase this as necessary!
 
@@ -36,6 +39,9 @@ class AddrSpace {
 					// for now!
     unsigned int numPages;		// Number of pages in the virtual 
 					// address space
+#if defined(CHANGED)
+    PCB *pcb;
+#endif
 };
 
 #endif // ADDRSPACE_H

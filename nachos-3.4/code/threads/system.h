@@ -35,6 +35,8 @@ extern Machine* machine;	// user program memory and registers
 #ifdef CHANGED
 #include "memorymanager.h"
 extern MemoryManager* memoryManager;
+#include "processmanager.h"
+extern ProcessManager* processManager;
 #endif
 #endif
 

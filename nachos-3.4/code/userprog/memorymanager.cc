@@ -51,9 +51,9 @@ void MemoryManager::clearPage(int pageId){
 // 	Return number of free pages
 //----------------------------------------------------------------------
 
-int MemoryManager::getFree(){
+unsigned int MemoryManager::getFree(){
 	lock->Acquire();
-	int numFree = virtMem->numClear(); //find and allocate a bit
+	int numFree = virtMem->NumClear(); //find and allocate a bit
 	lock->Release();
 	return numFree;
 }
