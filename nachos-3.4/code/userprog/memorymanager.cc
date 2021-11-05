@@ -30,10 +30,6 @@ MemoryManager::~MemoryManager(){
 int MemoryManager::getPage(){
 	lock->Acquire();
 	int pageNum = virtMem->Find(); //find and allocate a bit
-	if (pageNum == -1){
-		// Error: No clear bits
-		// Add error handling if error is to be handled here
-	}
 	lock->Release();
 	return pageNum;
 }
