@@ -9,7 +9,7 @@
 
 ProcessManager::ProcessManager (int size){
 	map = new BitMap(size);
-	lock = new Lock("bitmap lock");
+	lock = new Lock("Process bitmap lock");
 	pcbTable = new PCB*[size];
 }
 
@@ -78,14 +78,9 @@ void ProcessManager::addPCB(PCB *pcb){
 //  "pid" is the process ID
 //----------------------------------------------------------------------
 
-PCB *ProcessManager::getProcess(int pid){
+PCB* ProcessManager::getProcess(int pid){
 	lock->Acquire();
-	if(map->Test(pid)){
-		PCB *pcb = pcbTable[pid];
-		lock->Release();
-		return pcb;
-	} else {
-		lock->Release();
-		return NULL;
-	}
+	PCB *pcb = map->Test(pid) ? pcbTable[pid] : NULL;
+	lock->Release();
+	return pcb;
 }
