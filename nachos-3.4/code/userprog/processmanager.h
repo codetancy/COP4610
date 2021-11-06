@@ -1,4 +1,6 @@
 //processmanager.h
+#ifndef PROCESSMANAGER_H
+#define PROCESSMANAGER_H
 
 #include "synch.h"
 #include "bitmap.h"
@@ -18,3 +20,5 @@ class ProcessManager {
 	Lock *lock;
 	PCB** pcbTable;
 };
+
+#endif
