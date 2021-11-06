@@ -196,3 +196,36 @@ void AddrSpace::RestoreState()
     machine->pageTable = pageTable;
     machine->pageTableSize = numPages;
 }
+
+//----------------------------------------------------------------------
+// AddrSpace::Translate
+// 	Uses the virtual address and page number to calculate the
+//	physical address.
+//----------------------------------------------------------------------
+
+int AddrSpace::Translate(int virtualAddress, int pageSize)
+{
+    if (virtualAddress <= 0)
+    {
+        return -1;
+    }
+    if (pageSize <= 0)
+    {
+        return -1;
+    }
+
+    int pageNumber = virtualAddress / pageSize;
+    int memoryOffset = virtualAddress % pageSize;
+
+    if (pageNumber > numPages)
+    {
+        return -1;
+    }
+
+    int frameNumber = pageTable[pageNumber].physicalPage;
+    int physicalAddress = frameNumber * pageSize + memoryOffset;
+
+    pageTable[pageNumber].use = TRUE;
+
+    return physicalAddress;
+}
