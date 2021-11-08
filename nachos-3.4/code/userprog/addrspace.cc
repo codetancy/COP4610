@@ -118,14 +118,22 @@ AddrSpace::AddrSpace(OpenFile *executable)
     if (noffH.code.size > 0) {
         DEBUG('a', "Initializing code segment, at 0x%x, size %d\n", 
 			noffH.code.virtualAddr, noffH.code.size);
+#ifdef CHANGED
+		ReadFile(noffH.code.virtualAddr, executable, noffH.code.size, noffH.code.inFileAddr);
+#else
         executable->ReadAt(&(machine->mainMemory[noffH.code.virtualAddr]),
 			noffH.code.size, noffH.code.inFileAddr);
+#endif
     }
     if (noffH.initData.size > 0) {
         DEBUG('a', "Initializing data segment, at 0x%x, size %d\n", 
 			noffH.initData.virtualAddr, noffH.initData.size);
-        executable->ReadAt(&(machine->mainMemory[noffH.initData.virtualAddr]),
+#ifdef CHANGED
+		ReadFile(noffH.code.virtualAddr, executable, noffH.code.size, noffH.code.inFileAddr);
+#else
+		executable->ReadAt(&(machine->mainMemory[noffH.initData.virtualAddr]),
 			noffH.initData.size, noffH.initData.inFileAddr);
+#endif
     }
 
 }
@@ -197,35 +205,69 @@ void AddrSpace::RestoreState()
     machine->pageTableSize = numPages;
 }
 
+#ifdef CHANGED
 //----------------------------------------------------------------------
 // AddrSpace::Translate
 // 	Uses the virtual address and page number to calculate the
 //	physical address.
 //----------------------------------------------------------------------
 
-int AddrSpace::Translate(int virtualAddress, int pageSize)
+int AddrSpace::Translate(int virtualAddress)
 {
-    if (virtualAddress <= 0)
-    {
-        return -1;
-    }
-    if (pageSize <= 0)
+    if (virtualAddress < 0)
     {
         return -1;
     }
 
-    int pageNumber = virtualAddress / pageSize;
-    int memoryOffset = virtualAddress % pageSize;
+    int pageNumber = virtualAddress / PageSize;
+    int memoryOffset = virtualAddress % PageSize;
 
-    if (pageNumber > numPages)
+    if ((unsigned)pageNumber >= numPages)
+    {
+        return -1;
+    }
+	
+	if (!pageTable[pageNumber].valid)
     {
         return -1;
     }
 
     int frameNumber = pageTable[pageNumber].physicalPage;
-    int physicalAddress = frameNumber * pageSize + memoryOffset;
+    int physicalAddress = frameNumber * PageSize + memoryOffset;
 
     pageTable[pageNumber].use = TRUE;
-
+	
     return physicalAddress;
 }
+
+//----------------------------------------------------------------------
+// AddrSpace::ReadFile
+// 	Loads the code and data segment into the translated memory
+//----------------------------------------------------------------------
+
+int AddrSpace::ReadFile(int virtAddr, OpenFile* file, int size, int fileAddr)
+{
+    int physAddr;
+	
+	int readSize;
+	int numBytesRead = 0;
+	int numBytesLeft = size;
+	
+	char buffer[size];
+	file -> ReadAt(buffer, size, fileAddr);
+	
+	while(numBytesLeft > 0){
+		readSize = numBytesLeft < PageSize? numBytesLeft: PageSize - virtAddr % PageSize;
+		
+		physAddr = Translate(virtAddr);
+		ASSERT(physAddr >= 0);
+		
+		bcopy(buffer + numBytesRead, machine->mainMemory + physAddr, readSize);
+		numBytesLeft -= readSize;
+		numBytesRead += readSize;
+		virtAddr += readSize;
+	}
+	
+	return numBytesRead;
+}
+#endif

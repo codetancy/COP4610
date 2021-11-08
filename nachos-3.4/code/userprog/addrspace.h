@@ -34,9 +34,11 @@ class AddrSpace {
     void SaveState();			// Save/restore address space-specific
     void RestoreState();		// info on a context switch 
 
-    int Translate(int virtualAddress, int pageSize);
+    int Translate(int virtualAddress);
 					// Obtains physical address from virtual
 					// address and page size
+	int ReadFile(int virtAddr, OpenFile* file, int size, int fileAddr);
+					//Loads code and data segments
   private:
     TranslationEntry *pageTable;	// Assume linear page table translation
 					// for now!
