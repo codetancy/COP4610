@@ -113,13 +113,19 @@ void fork(){
     update();
 }
 
+void yield()
+{
+    // 1. Current thread yield
+    currentThread->Sleep();
+    update();
+}
+
 void
 ExceptionHandler(ExceptionType which)
 {
     int type = machine->ReadRegister(2);
 
-   
- /* Make System Calls*/
+    /* Make System Calls*/
     if ((which == SyscallException)){
         switch(type){
             /*FIXME: Make edits to each system call to work successfully*/
@@ -130,7 +136,8 @@ ExceptionHandler(ExceptionType which)
 
             case SC_Yield:
                 DEBUG('a', "Yield, initiated by user program.\n");
-                break;
+                yield();
+		break;
 
             case SC_Exec:
                 DEBUG('a', "Exec, initiated by user program.\n");
