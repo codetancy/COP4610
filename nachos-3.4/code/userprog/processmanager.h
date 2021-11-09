@@ -14,6 +14,7 @@ class ProcessManager {
 		void clearPID (int pid); //Clears a process ID
 		int getFree(); //Return number of free process IDs
 		void addPCB(PCB *pcb); //Adds PCB to PCB Table
+		void removePCB(int pid); //Removes PCB from PCB Table
 		PCB *getProcess (int pid); //Returns pcb associated with a process ID
 	private:
 	BitMap *map;

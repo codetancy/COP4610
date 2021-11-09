@@ -270,4 +270,47 @@ int AddrSpace::ReadFile(int virtAddr, OpenFile* file, int size, int fileAddr)
 	
 	return numBytesRead;
 }
+
+//----------------------------------------------------------------------
+// AddrSpace::AddrSpace
+// 	Create an address space.
+//	"num" is the number of pages
+//----------------------------------------------------------------------
+
+AddrSpace::AddrSpace(unsigned int num)
+{
+	numPages = num;
+	pageTable = new TranslationEntry[numPages];
+}
+
+//----------------------------------------------------------------------
+// AddrSpace::copy
+// 	Copies address space
+//	"num" is the number of pages
+//----------------------------------------------------------------------
+
+AddrSpace* AddrSpace::copy()
+{
+	if (numPages > memoryManager->getFree()){
+		return NULL;
+	}
+	
+	AddrSpace* newAddrSpace = new AddrSpace(numPages);
+	
+	for (unsigned int i = 0; i < numPages; i++) {
+		newAddrSpace->pageTable[i].virtualPage = pageTable[i].virtualPage;
+		newAddrSpace->pageTable[i].physicalPage = memoryManager->getPage();
+		newAddrSpace->pageTable[i].valid = pageTable[i].valid;
+		newAddrSpace->pageTable[i].use = pageTable[i].use;
+		newAddrSpace->pageTable[i].dirty = pageTable[i].dirty;
+		newAddrSpace->pageTable[i].readOnly = pageTable[i].readOnly;
+		
+		bcopy(machine->mainMemory + pageTable[i].physicalPage*PageSize, 
+			machine->mainMemory + newAddrSpace->pageTable[i].physicalPage*PageSize,
+			PageSize);
+	}
+	
+	return newAddrSpace;
+}
+
 #endif

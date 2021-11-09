@@ -30,7 +30,17 @@ StartProcess(char *filename)
 	printf("Unable to open file %s\n", filename);
 	return;
     }
-    space = new AddrSpace(executable);    
+    
+    int pid = processManager->getPID();
+    if (pid < 0){
+        return;
+    }
+    PCB *npcb = new PCB(currentThread);
+    npcb->set(pid, NULL);
+    processManager->addPCB(npcb);
+    
+    space = new AddrSpace(executable);   
+    space->pcb = npcb;
     currentThread->space = space;
 
     delete executable;			// close file

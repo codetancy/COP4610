@@ -73,6 +73,18 @@ void ProcessManager::addPCB(PCB *pcb){
 }
 
 //----------------------------------------------------------------------
+// ProcessManager::removePCB
+// 	Removed PCB from PCB Table
+//  "pid" is the process ID
+//----------------------------------------------------------------------
+
+void ProcessManager::removePCB(int pid){
+	lock->Acquire();
+	pcbTable[pid] = NULL;
+	lock->Release();
+}
+
+//----------------------------------------------------------------------
 // ProcessManager::getProcess
 // 	Returns pcb associated with a process ID
 //  "pid" is the process ID
