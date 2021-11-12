@@ -127,6 +127,48 @@ List::Remove()
     return SortedRemove(NULL);  // Same as SortedRemove, but ignore the key
 }
 
+void* List::RemoveElement(void *item)
+{
+    ListElement *current = first;
+    ListElement *previous = current;
+
+    while (current != NULL && current->item != item)
+    {
+        previous = current;
+        current = current->next;
+    }
+
+    if (current == NULL)
+        return NULL;
+
+    void *thing = current->item;
+
+    previous->next = current->next;
+
+    delete current;
+
+    return thing;
+}
+
+bool List::Search(void *item)
+{
+    bool found = FALSE;
+    ListElement *current = first;
+
+    while(current != NULL && !found)
+    {
+        if (current->item == item)
+        {
+            found = TRUE;
+            break;
+        }
+        current = current->next;
+    }
+
+    return found;
+}
+
+
 //----------------------------------------------------------------------
 // List::Mapcar
 //	Apply a function to each item on the list, by walking through  

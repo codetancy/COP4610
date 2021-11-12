@@ -17,6 +17,8 @@
 #include "filesys.h"
 #if defined(CHANGED)
 #include "pcb.h"
+
+class PCB;
 #endif
 
 #define UserStackSize		1024 	// increase this as necessary!
@@ -32,23 +34,27 @@ class AddrSpace {
 					// before jumping to user code
 
     void SaveState();			// Save/restore address space-specific
-    void RestoreState();		// info on a context switch 
+    void RestoreState();		// info on a context switch
 #if defined(CHANGED)
-    int Translate(int virtualAddress);
-					// Obtains physical address from virtual
+    int Translate(int virtualAddress);  // Obtains physical address from virtual
 					// address and page size
-	int ReadFile(int virtAddr, OpenFile* file, int size, int fileAddr);
-					//Loads code and data segments
-    AddrSpace(unsigned int num); // Create an address space
-    AddrSpace* copy(); //Copy old addrspace to new addrspace
-    
-    PCB *pcb;
+    int ReadFile(int virtAddr, OpenFile* file, int size, int fileAddr);
+					// Loads code and data segments
+    AddrSpace(unsigned int num); 	// Create an address space
+    AddrSpace* copy(); 			// Copy old addrspace to new addrspace
+
+    PCB *pcb;				// Address space Process Control Block
+
+    bool Replace(OpenFile* exec);	// Replace the current address space
+					// with an executable
 #endif
   private:
     TranslationEntry *pageTable;	// Assume linear page table translation
 					// for now!
-    unsigned int numPages;		// Number of pages in the virtual 
+    unsigned int numPages;		// Number of pages in the virtual
 					// address space
+    void ReleasePhysicalMemory();
+    void InitializePageTable();
 };
 
 #endif // ADDRSPACE_H

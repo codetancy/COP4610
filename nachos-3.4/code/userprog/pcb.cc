@@ -8,7 +8,9 @@
 //----------------------------------------------------------------------
 
 PCB::PCB (Thread *input){
-	processThread = input;
+    processThread = input;
+    children = new List();
+    lock = new Lock("Children lock");
 }
 
 //----------------------------------------------------------------------
@@ -17,6 +19,8 @@ PCB::PCB (Thread *input){
 //----------------------------------------------------------------------
 
 PCB::~PCB(){
+    delete children;
+    delete lock;
 }
 
 //----------------------------------------------------------------------
@@ -25,7 +29,7 @@ PCB::~PCB(){
 //----------------------------------------------------------------------
 
 int PCB::getID(){
-	return processID;
+    return processID;
 }
 
 //----------------------------------------------------------------------
@@ -34,7 +38,7 @@ int PCB::getID(){
 //----------------------------------------------------------------------
 
 PCB* PCB::getParent(){
-	return parent_process;
+    return parent_process;
 }
 
 //----------------------------------------------------------------------
@@ -44,6 +48,28 @@ PCB* PCB::getParent(){
 //----------------------------------------------------------------------
 
 void PCB::set(int pid, PCB *parent){
-	processID = pid;
-	parent_process = parent;
+    processID = pid;
+    parent_process = parent;
 }
+
+bool PCB::addChild(int* childId)
+{
+    lock->Acquire();
+    children->Append((void*) childId);
+    lock->Release();
+    return TRUE;
+}
+
+bool PCB::removeChild(int* childId)
+{
+    lock->Acquire();
+    void* child = children->RemoveElement((void*) childId);
+    lock->Release();
+    return child != NULL;
+}
+
+bool PCB::isChild(int* childId)
+{
+    return children->Search((void*) childId);
+}
+

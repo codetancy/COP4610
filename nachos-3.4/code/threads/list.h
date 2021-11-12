@@ -48,11 +48,13 @@ class List {
     void Prepend(void *item); 	// Put item at the beginning of the list
     void Append(void *item); 	// Put item at the end of the list
     void *Remove(); 	 	// Take item off the front of the list
+    void *RemoveElement(void *item);
+    bool Search(void *item);
+
 
     void Mapcar(VoidFunctionPtr func);	// Apply "func" to every element 
 					// on the list
     bool IsEmpty();		// is the list empty? 
-    
 
     // Routines to put/get items on/off list in order (sorted by key)
     void SortedInsert(void *item, int sortKey);	// Put item into list
