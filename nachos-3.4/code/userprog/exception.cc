@@ -90,6 +90,7 @@ void fork(){
 
     // 5. Complete PCB with information such as pid, ppid, etc.
     newPCB->set(pid, currentThread->space->pcb);
+    currentThread->space->pcb->addChild(&pid);
     processManager->addPCB(newPCB);
 
     // 6. Copy old register values to new register. Set pc reg value to value in r4.
@@ -116,8 +117,45 @@ void fork(){
 void yield()
 {
     // 1. Current thread yield
-    currentThread->Sleep();
+    currentThread->Yield();
     update();
+}
+
+void nullParent(int pid){
+    PCB *pcb = processManager->getProcess(pid);
+    pcb->set(pid, NULL);
+}
+
+void exit(){
+    int pid = currentThread->space->pcb->getID();
+    
+    // 1. Get exit code from r4;
+    int code = machine->ReadRegister(4);
+    
+    // if current process has children, set their parent pointers to null;
+    List *children = currentThread->space->pcb->getChildren();
+    if(!children->IsEmpty()){
+        children->Mapcar(nullParent);
+    }
+    
+    // if current process has a parent, remove itself from the children list of its
+    // parent process and set child exit value to parent.
+    PCB *parent = currentThread->space->pcb->getParent();
+    if(parent != NULL){
+        parent->removeChild(&pid);
+        parent->setExit(code);
+    }
+    
+    // 2. Remove current process from the pcb manager and pid manager.
+    processManager->removePCB(pid);
+    processManager->clearPID(pid);
+    
+    // 3. Deallocate the process memory and remove from the page table;
+    // current thread finish.
+    currentThread->space->ReleasePhysicalMemory();
+    delete currentThread->space->pcb;
+    delete currentThread->space;
+    currentThread->Finish();
 }
 
 void
@@ -137,7 +175,7 @@ ExceptionHandler(ExceptionType which)
             case SC_Yield:
                 DEBUG('a', "Yield, initiated by user program.\n");
                 yield();
-		break;
+                break;
 
             case SC_Exec:
                 DEBUG('a', "Exec, initiated by user program.\n");
@@ -149,6 +187,7 @@ ExceptionHandler(ExceptionType which)
 
             case SC_Exit:
                 DEBUG('a', "Exit, initiated by user program.\n");
+                exit();
                 break;
 
             case SC_Kill:

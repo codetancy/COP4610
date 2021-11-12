@@ -42,7 +42,16 @@ PCB* PCB::getParent(){
 }
 
 //----------------------------------------------------------------------
-// PCB::setID
+// PCB::getChildren
+// 	Return the list of children process
+//----------------------------------------------------------------------
+
+List* PCB::getChildren(){
+    return children;
+}
+
+//----------------------------------------------------------------------
+// PCB::set
 // 	Stores the PID in the pcb
 //  "pid" is the process ID
 //----------------------------------------------------------------------
@@ -50,6 +59,16 @@ PCB* PCB::getParent(){
 void PCB::set(int pid, PCB *parent){
     processID = pid;
     parent_process = parent;
+}
+
+//----------------------------------------------------------------------
+// PCB::setExit
+// 	Stores the exit code of the child
+//  "code" is the exit code of the child
+//----------------------------------------------------------------------
+
+void PCB::setExit(int code){
+    childExitValue = code;
 }
 
 bool PCB::addChild(int* childId)

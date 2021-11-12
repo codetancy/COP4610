@@ -47,13 +47,13 @@ class AddrSpace {
 
     bool Replace(OpenFile* exec);	// Replace the current address space
 					// with an executable
+    void ReleasePhysicalMemory();
 #endif
   private:
     TranslationEntry *pageTable;	// Assume linear page table translation
 					// for now!
     unsigned int numPages;		// Number of pages in the virtual
 					// address space
-    void ReleasePhysicalMemory();
     void InitializePageTable();
 };
 

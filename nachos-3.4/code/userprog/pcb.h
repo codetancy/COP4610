@@ -16,7 +16,9 @@ class PCB {
         ~PCB ();
         int getID();
         PCB *getParent();
+        List *getChildren();
         void set(int pid, PCB *parent);
+        void setExit(int code);
         bool addChild(int *childId);
         bool removeChild(int *childId);
         bool isChild(int *childId);
@@ -27,5 +29,6 @@ class PCB {
         PCB *parent_process;
         List *children;
         Lock *lock;
+        int childExitValue;
 };
 #endif
