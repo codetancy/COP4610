@@ -158,6 +158,37 @@ void exit(){
     currentThread->Finish();
 }
 
+void join(){
+  int pid = currentThread->space->pcb->getID();
+
+  List *children = currentThread->space->pcb->getChildren(); //retrieve children
+  PCB *parent = currentThread->space->pcb->getParent();
+
+  if (children->IsEmpty()){ //if no child found return //children->isEmpty()
+        machine->WriteRegister(2, -1);
+        update();
+        return;
+    }
+
+   if (parent->isChild(&pid)){ //check if pid is a child
+        machine->WriteRegister(2, -1);
+        update();
+    }
+  else{ //add child into pcb - join child
+        machine->WriteRegister(2, -1);
+        parent->addChild(&pid);
+        update();
+    }
+
+//yield exit
+    while(processManager -> getProcess(pid)){
+        currentThread -> Yield();
+    }
+
+    machine->WriteRegister(2, 0); //exit code status 0 = good/exitCode
+    update();
+}
+
 void
 ExceptionHandler(ExceptionType which)
 {
@@ -183,6 +214,7 @@ ExceptionHandler(ExceptionType which)
 
             case SC_Join:
                 DEBUG('a', "Join, initiated by user program.\n");
+		join(); 
                 break;
 
             case SC_Exit:
