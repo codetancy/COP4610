@@ -48,6 +48,7 @@ class AddrSpace {
     bool Replace(OpenFile* exec);	// Replace the current address space
 					// with an executable
     void ReleasePhysicalMemory();
+    unsigned int getPages();
 #endif
   private:
     TranslationEntry *pageTable;	// Assume linear page table translation

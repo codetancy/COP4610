@@ -15,13 +15,14 @@ class PCB {
         PCB (Thread *input);
         ~PCB ();
         int getID();
+        int getCode();
         PCB *getParent();
         List *getChildren();
         void set(int pid, PCB *parent);
         void setExit(int code);
-        bool addChild(int *childId);
-        bool removeChild(int *childId);
-        bool isChild(int *childId);
+        bool addChild(PCB *childId);
+        bool removeChild(PCB *childId);
+        bool isChild(PCB *childId);
     private:
         int MAX_FILES;
         Thread *processThread;

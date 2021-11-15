@@ -61,6 +61,7 @@ void dummy(int arg){
 }
 
 void fork(){
+    printf("System Call: [%d] invoked Fork\n", currentThread->space->pcb->getID());
     // 1. Save old process registers.
     currentThread->SaveUserState();
 
@@ -90,7 +91,7 @@ void fork(){
 
     // 5. Complete PCB with information such as pid, ppid, etc.
     newPCB->set(pid, currentThread->space->pcb);
-    currentThread->space->pcb->addChild(&pid);
+    currentThread->space->pcb->addChild(newPCB);
     processManager->addPCB(newPCB);
 
     // 6. Copy old register values to new register. Set pc reg value to value in r4.
@@ -112,26 +113,31 @@ void fork(){
 
     // 10. Update counter of old process and return.
     update();
+    printf("Process [%d] Fork: start at address [0x%x] with [%d] pages memory\n",
+        currentThread->space->pcb->getID(),
+        machine->ReadRegister(4),
+        currentThread->space->getPages());
 }
 
 void yield()
 {
+    printf("System Call: [%d] invoked Yield\n", currentThread->space->pcb->getID());
     // 1. Current thread yield
     currentThread->Yield();
     update();
 }
 
-void nullParent(int pid){
-    PCB *pcb = processManager->getProcess(pid);
-    pcb->set(pid, NULL);
+void nullParent(int p){
+    PCB *pcb = (PCB*) p;
+    pcb->set(pcb->getID(), NULL);
 }
 
 void exit(){
     int pid = currentThread->space->pcb->getID();
+    printf("System Call: [%d] invoked Exit\n", pid);
     
     // 1. Get exit code from r4;
     int code = machine->ReadRegister(4);
-    
     // if current process has children, set their parent pointers to null;
     List *children = currentThread->space->pcb->getChildren();
     if(!children->IsEmpty()){
@@ -142,7 +148,7 @@ void exit(){
     // parent process and set child exit value to parent.
     PCB *parent = currentThread->space->pcb->getParent();
     if(parent != NULL){
-        parent->removeChild(&pid);
+        parent->removeChild(currentThread->space->pcb);
         parent->setExit(code);
     }
     
@@ -155,37 +161,39 @@ void exit(){
     currentThread->space->ReleasePhysicalMemory();
     delete currentThread->space->pcb;
     delete currentThread->space;
+    printf("Process [%d] exits with [%d]\n", pid, code);
     currentThread->Finish();
 }
 
 void join(){
-  int pid = currentThread->space->pcb->getID();
+    printf("System Call: [%d] invoked Join\n", currentThread->space->pcb->getID());
+    
+    // 1. Read process id from register r4.
+    int pid = machine->ReadRegister(4);
 
-  List *children = currentThread->space->pcb->getChildren(); //retrieve children
-  PCB *parent = currentThread->space->pcb->getParent();
-
-  if (children->IsEmpty()){ //if no child found return //children->isEmpty()
+    // 2. Make sure the requested process id is the child process of the current
+    // process.
+    if (pid < 0){
         machine->WriteRegister(2, -1);
         update();
         return;
     }
-
-   if (parent->isChild(&pid)){ //check if pid is a child
+    PCB* pcb = processManager->getProcess(pid);
+    if (!currentThread->space->pcb->isChild(pcb)){ //check if pid is a child
         machine->WriteRegister(2, -1);
         update();
+        return;
     }
-  else{ //add child into pcb - join child
-        machine->WriteRegister(2, -1);
-        parent->addChild(&pid);
-        update();
-    }
-
-//yield exit
-    while(processManager -> getProcess(pid)){
-        currentThread -> Yield();
+    
+    // 3. Keep on checking if the requested process is finished. if not, yield the
+    // current process.
+    while(processManager->getProcess(pid)){
+        currentThread->Yield();
     }
 
-    machine->WriteRegister(2, 0); //exit code status 0 = good/exitCode
+    // 4. If the requested process finished, write the requested process exit id to
+    // register r2 to return it.
+    machine->WriteRegister(2, currentThread->space->pcb->getCode());
     update();
 }
 
@@ -214,7 +222,7 @@ ExceptionHandler(ExceptionType which)
 
             case SC_Join:
                 DEBUG('a', "Join, initiated by user program.\n");
-		join(); 
+                join();
                 break;
 
             case SC_Exit:

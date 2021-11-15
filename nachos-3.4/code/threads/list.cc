@@ -130,8 +130,16 @@ List::Remove()
 void* List::RemoveElement(void *item)
 {
     ListElement *current = first;
-    ListElement *previous = current;
-
+    ListElement *previous = NULL;
+    void *thing = NULL;
+    
+    if(current != NULL && current->item == item){
+        first = current->next;
+        thing = current->item;
+        delete current;
+        return thing;
+    }
+    
     while (current != NULL && current->item != item)
     {
         previous = current;
@@ -141,7 +149,7 @@ void* List::RemoveElement(void *item)
     if (current == NULL)
         return NULL;
 
-    void *thing = current->item;
+    thing = current->item;
 
     previous->next = current->next;
 

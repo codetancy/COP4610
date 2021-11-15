@@ -85,6 +85,9 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
     if (noffH.initData.size > 0)
         ReadFile(noffH.code.virtualAddr, executable, noffH.initData.size, noffH.code.inFileAddr);
+    
+    printf("Loaded Program: [%d] code | [%d] data | [%d] bss\n", noffH.code.size, noffH.initData.size, noffH.uninitData.size);
+    
 #else
     NoffHeader noffH;
     unsigned int i, size;
@@ -360,6 +363,10 @@ AddrSpace* AddrSpace::copy()
 bool Replace(OpenFile* exec)
 {
     return TRUE;
+}
+
+unsigned int AddrSpace::getPages(){
+    return numPages;
 }
 
 #endif

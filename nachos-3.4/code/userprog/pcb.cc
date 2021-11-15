@@ -32,6 +32,10 @@ int PCB::getID(){
     return processID;
 }
 
+int PCB::getCode(){
+    return childExitValue;
+}
+
 //----------------------------------------------------------------------
 // PCB::getParent
 // 	Return parent process
@@ -71,7 +75,7 @@ void PCB::setExit(int code){
     childExitValue = code;
 }
 
-bool PCB::addChild(int* childId)
+bool PCB::addChild(PCB* childId)
 {
     lock->Acquire();
     children->Append((void*) childId);
@@ -79,7 +83,7 @@ bool PCB::addChild(int* childId)
     return TRUE;
 }
 
-bool PCB::removeChild(int* childId)
+bool PCB::removeChild(PCB* childId)
 {
     lock->Acquire();
     void* child = children->RemoveElement((void*) childId);
@@ -87,7 +91,7 @@ bool PCB::removeChild(int* childId)
     return child != NULL;
 }
 
-bool PCB::isChild(int* childId)
+bool PCB::isChild(PCB* childId)
 {
     return children->Search((void*) childId);
 }
