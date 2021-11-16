@@ -196,6 +196,75 @@ void join(){
     machine->WriteRegister(2, currentThread->space->pcb->getCode());
     update();
 }
+void kill(){
+    int i, killID, index;
+    pcb* killPCB;
+    printf("System Call: [%d] invoked Kill.\n", currentThread->space->getPID()); 
+
+
+    killID = machine->ReadRegister(4);
+
+    //if its not a valid ID, return error
+    if(!pcbMan->validPID(killID))
+    {
+	printf("Process [%d] cannot kill process [%d]: doesn't exist\n", currentThread->space->getPID(), killID); 
+	machine->WriteRegister(2,-1);
+    	return -1;
+    }
+    else if(currentThread == (pcbMan->getThisPCB(killID))->returnThread())
+    {
+	syscallExit();
+	machine->WriteRegister(2,0);
+        index = killID;
+	return 0;
+    }
+    else
+    {
+
+    	//get a pointer to the pcb of the process to be killed
+    	killPCB = pcbMan->getThisPCB(killID);
+        index = killID;
+
+ 	//if this process has children, set their parent pointers to null
+    	if(killPCB->numberChildren() > 0)
+    	{
+    		killPCB->setParentsNull();
+    	}
+
+    	//if this process has a parent, remove itself from the childManager  
+    
+    	if(killPCB->getParent() != NULL)
+    	{
+    		killPCB->getParent()->removeChild(killID);
+    	}
+
+    	//remove itself from the pcbManager and PID manager
+    	pcbMan->removePCB(killID);
+    	pid_manager->removePid(killID);
+
+	//free up the memory
+    	AddrSpace *tempAd = killPCB->getAddrSpace();
+    	TranslationEntry *tempPage = tempAd->getPageTable();
+    	for(i=0; i < tempAd->getNumPages(); i++)
+    	{
+		mans_man->deallocate(tempPage[i].physicalPage);
+    	}
+
+	//check open files and delete them 
+
+        //Remove Thread from Scheduler and delete it
+	Thread* killThread = killPCB->returnThread();
+	scheduler->RemoveThisThread(killThread);
+        index = 0;
+    	delete tempAd;
+
+    	printf("Process [%d] killed process [%d]\n", currentThread->space->getPID(), killID);
+	machine->WriteRegister(2,0);
+	return 0;
+    }
+
+}
+}
 
 void
 ExceptionHandler(ExceptionType which)
