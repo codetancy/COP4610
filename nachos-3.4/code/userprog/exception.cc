@@ -1,4 +1,4 @@
-// exception.cc 
+// exception.cc
 //	Entry point into the Nachos kernel from user programs.
 //	There are two kinds of things that can cause control to
 //	transfer back to here from user code:
@@ -9,7 +9,7 @@
 //
 //	exceptions -- The user code does something that the CPU can't handle.
 //	For instance, accessing memory that doesn't exist, arithmetic errors,
-//	etc.  
+//	etc.
 //
 //	Interrupts (which can also cause control to transfer from user
 //	code into the Nachos kernel) are handled elsewhere.
@@ -18,7 +18,7 @@
 // Everything else core dumps.
 //
 // Copyright (c) 1992-1993 The Regents of the University of California.
-// All rights reserved.  See copyright.h for copyright notice and limitation 
+// All rights reserved.  See copyright.h for copyright notice and limitation
 // of liability and disclaimer of warranty provisions.
 
 #include "copyright.h"
@@ -39,12 +39,12 @@
 //		arg3 -- r6
 //		arg4 -- r7
 //
-//	The result of the system call, if any, must be put back into r2. 
+//	The result of the system call, if any, must be put back into r2.
 //
 // And don't forget to increment the pc before returning. (Or else you'll
 // loop making the same system call forever!
 //
-//	"which" is the kind of exception.  The list of possible exceptions 
+//	"which" is the kind of exception.  The list of possible exceptions
 //	are in machine.h.
 //----------------------------------------------------------------------
 
@@ -135,7 +135,7 @@ void nullParent(int p){
 void exit(){
     int pid = currentThread->space->pcb->getID();
     printf("System Call: [%d] invoked Exit\n", pid);
-    
+
     // 1. Get exit code from r4;
     int code = machine->ReadRegister(4);
     // if current process has children, set their parent pointers to null;
@@ -143,7 +143,7 @@ void exit(){
     if(!children->IsEmpty()){
         children->Mapcar(nullParent);
     }
-    
+
     // if current process has a parent, remove itself from the children list of its
     // parent process and set child exit value to parent.
     PCB *parent = currentThread->space->pcb->getParent();
@@ -151,11 +151,11 @@ void exit(){
         parent->removeChild(currentThread->space->pcb);
         parent->setExit(code);
     }
-    
+
     // 2. Remove current process from the pcb manager and pid manager.
     processManager->removePCB(pid);
     processManager->clearPID(pid);
-    
+
     // 3. Deallocate the process memory and remove from the page table;
     // current thread finish.
     currentThread->space->ReleasePhysicalMemory();
@@ -167,7 +167,7 @@ void exit(){
 
 void join(){
     printf("System Call: [%d] invoked Join\n", currentThread->space->pcb->getID());
-    
+
     // 1. Read process id from register r4.
     int pid = machine->ReadRegister(4);
 
@@ -184,7 +184,7 @@ void join(){
         update();
         return;
     }
-    
+
     // 3. Keep on checking if the requested process is finished. if not, yield the
     // current process.
     while(processManager->getProcess(pid)){
@@ -194,6 +194,25 @@ void join(){
     // 4. If the requested process finished, write the requested process exit id to
     // register r2 to return it.
     machine->WriteRegister(2, currentThread->space->pcb->getCode());
+    update();
+}
+
+void exec()
+{
+    printf("System Call: [%d] invoked Exec\n", currentThread->space->pcb->getID());
+
+    // 1. Read file
+    int address = machine->ReadRegister(4);
+
+    // 2. Replace the address space with the content of the executable at the
+    // given virtual address
+    bool success = currentThread->space->Replace(address);
+    if (success)
+        machine->WriteRegister(2, 1);
+    else
+        machine->WriteRegister(2, -1);
+
+    // 3. Update resgisters
     update();
 }
 
@@ -218,7 +237,8 @@ ExceptionHandler(ExceptionType which)
 
             case SC_Exec:
                 DEBUG('a', "Exec, initiated by user program.\n");
-                break;
+                exec();
+               	break;
 
             case SC_Join:
                 DEBUG('a', "Join, initiated by user program.\n");
