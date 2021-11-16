@@ -301,6 +301,7 @@ ExceptionHandler(ExceptionType which)
 
             case SC_Kill:
                 DEBUG('a', "Kill, initiated by user program.\n");
+		kill(); 
                 break;
 
             default: //default -- halt
