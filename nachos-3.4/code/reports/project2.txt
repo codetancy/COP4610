@@ -1,12 +1,17 @@
-How you design the code
+How you design the code:
+We designed our code following the implementation guide and the project 2 notes provided. Using the documents to guide us we created a memory manager, a process manager, a pcb class, modified the address space, and implemented the system calls.
+
+How your code works:
+Our code is capable to run multiple processes by the implementation of the memory manager, the process manager, and the pcb class structure and the modification of the address space class. They are responsible for handling memory allocation and deallocation, implementing the translation of virtual memory, loading the code into memory, and keeping track of the parent-child hierarchy of the processes. With the ability to run multiple processes, nachos is able to run all of the system calls that are catched by the exception handler whenever they are called in the running program.
+
+How to run tests:
+After compiling nachos, go to the userprog directory and execute nachos by typing "./nachos -x ../test/[program]" where [program] is the name of the program in the test directory that you want nachos to run. The programs that you can run are exec, fork, join, and kill (the test programs provided in the project 2 materials).
 
 
-How your code works
+Contributions:
 
-
-How to run tests
-
-
-
-Contributions
-
+Juan Arias:
+Implemented the memory manager, process manager, and the pcb class
+Added the ReadFile function to Addrspace
+Added the fork and exit system calls and fixed the kill system call
+Imported the test programs from the porject 2 materials online directory
