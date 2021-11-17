@@ -26,7 +26,7 @@ Peter Llerena:
 
 Alexis:
 Implemented the Join Method in the exception.cc file
-Implemented the Kill Block in the start.s file. This will allow this will allow the kill method to function properly. 
+Implemented the Kill Block in the start.s file. This will allow the kill method to function properly. 
 Updated the syscall.h header file to define the SC_Kill block
 
 
