@@ -37,6 +37,8 @@ Implemented kill method
 Assisted with setup
 
 Peter Llerena:
+Attended group meetings to see methods that was being implemented
+Assisted with coordinating times for group to meet
 
 Alexis:
 Implemented the Join Method in the exception.cc file
