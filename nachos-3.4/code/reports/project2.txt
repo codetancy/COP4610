@@ -15,3 +15,17 @@ Implemented the memory manager, process manager, and the pcb class
 Added the ReadFile function to Addrspace
 Added the fork and exit system calls and fixed the kill system call
 Imported the test programs from the porject 2 materials online directory
+
+Franklin Bello:
+
+Malcolm Verdier:
+Implemented kill method
+Assisted with setup
+
+Peter Llerena:
+
+Alexis:
+
+
+
+
