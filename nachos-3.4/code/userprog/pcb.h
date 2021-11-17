@@ -16,6 +16,7 @@ class PCB {
         ~PCB ();
         int getID();
         int getCode();
+        Thread* getThread();
         PCB *getParent();
         List *getChildren();
         void set(int pid, PCB *parent);

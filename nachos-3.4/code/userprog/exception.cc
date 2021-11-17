@@ -196,92 +196,79 @@ void join(){
     machine->WriteRegister(2, currentThread->space->pcb->getCode());
     update();
 }
+
 void kill(){
-    int i, killID, index;
-    pcb* killPCB;
-    printf("System Call: [%d] invoked Kill.\n", currentThread->space->getPID()); 
-
-
-    killID = machine->ReadRegister(4);
-
-    //if its not a valid ID, return error
-    if(!pcbMan->validPID(killID))
-    {
-	printf("Process [%d] cannot kill process [%d]: doesn't exist\n", currentThread->space->getPID(), killID); 
-	machine->WriteRegister(2,-1);
-    	return -1;
-    }
-    else if(currentThread == (pcbMan->getThisPCB(killID))->returnThread())
-    {
-	syscallExit();
-	machine->WriteRegister(2,0);
-        index = killID;
-	return 0;
-    }
-    else
-    {
-
-    	//get a pointer to the pcb of the process to be killed
-    	killPCB = pcbMan->getThisPCB(killID);
-        index = killID;
-
- 	//if this process has children, set their parent pointers to null
-    	if(killPCB->numberChildren() > 0)
-    	{
-    		killPCB->setParentsNull();
-    	}
-
-    	//if this process has a parent, remove itself from the childManager  
+    int pid = currentThread->space->pcb->getID();
+    printf("System Call: [%d] invoked Kill.\n", pid); 
     
-    	if(killPCB->getParent() != NULL)
-    	{
-    		killPCB->getParent()->removeChild(killID);
-    	}
-
-    	//remove itself from the pcbManager and PID manager
-    	pcbMan->removePCB(killID);
-    	pid_manager->removePid(killID);
-
-	//free up the memory
-    	AddrSpace *tempAd = killPCB->getAddrSpace();
-    	TranslationEntry *tempPage = tempAd->getPageTable();
-    	for(i=0; i < tempAd->getNumPages(); i++)
-    	{
-		mans_man->deallocate(tempPage[i].physicalPage);
-    	}
-
-	//check open files and delete them 
-
-        //Remove Thread from Scheduler and delete it
-	Thread* killThread = killPCB->returnThread();
-	scheduler->RemoveThisThread(killThread);
-        index = 0;
-    	delete tempAd;
-
-    	printf("Process [%d] killed process [%d]\n", currentThread->space->getPID(), killID);
-	machine->WriteRegister(2,0);
-	return 0;
+    // 1. Read killed ID from r4. 
+    int killID = machine->ReadRegister(4);
+    
+    // 2. Make sure if the killed process exists.
+    PCB* killPCB = processManager->getProcess(killID);
+    if(killPCB == NULL){
+        machine->WriteRegister(2, -1);
+        update();
+        printf("Process [%d] cannot kill process [%d]: doesn't exist\n", pid, killID); 
+        return;
     }
-
-}
+    
+    // 3. If killed process is the current process, simply call exit 
+    if(killID == pid){
+        exit();
+        machine->WriteRegister(2, 0);
+        update();
+        return;
+    }
+        // if the killed process has children, set their parent pointers to null
+    List *children = killPCB->getChildren();
+    if(!children->IsEmpty()){
+        children->Mapcar(nullParent);
+    }
+        // if the killed process has a parent, remove itself from the child list.
+    PCB *parent = killPCB->getParent();
+    if(parent != NULL){
+        parent->removeChild(killPCB);
+    }
+    
+    // 4. Remove itself from the pcb list and pid list.
+    processManager->removePCB(killID);
+    processManager->clearPID(killID);
+    
+    // 5. Free up memory and remove page table item.
+    Thread* killThread = killPCB->getThread();
+    AddrSpace* killSpace = killThread->space;
+    killSpace->ReleasePhysicalMemory();
+    delete killPCB;
+    delete killSpace;
+    
+    // 6. Remove killed thread from scheduler. 
+    scheduler->Remove(killThread);
+    
+    // 7. Return 0 in r2 to show succeed.
+    machine->WriteRegister(2, 0);
+    update();
+    printf("Process [%d] killed process [%d]\n", pid, killID);
 }
 
 void exec()
 {
     printf("System Call: [%d] invoked Exec\n", currentThread->space->pcb->getID());
 
-    // 1. Read file
+    // 1. Read register r4 to get the executable path.
     int address = machine->ReadRegister(4);
 
-    // 2. Replace the address space with the content of the executable at the
-    // given virtual address
+    // 2. Replace the process memory with the content of the executable.
+    // 3. Init registers.
     bool success = currentThread->space->Replace(address);
+    
+    // 4. Write 1 to register r2 indicating exec() invoked successful;
+    // 5. Return -1 if any step failed. e.g., the executable is unrecognizable. 
     if (success)
         machine->WriteRegister(2, 1);
     else
         machine->WriteRegister(2, -1);
 
-    // 3. Update resgisters
     update();
 }
 

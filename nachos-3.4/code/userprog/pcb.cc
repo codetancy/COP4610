@@ -36,6 +36,10 @@ int PCB::getCode(){
     return childExitValue;
 }
 
+Thread* PCB::getThread(){
+    return processThread;
+}
+
 //----------------------------------------------------------------------
 // PCB::getParent
 // 	Return parent process
