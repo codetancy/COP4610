@@ -1,1 +1,12 @@
+How you design the code
+
+
+How your code works
+
+
+How to run tests
+
+
+
+Contributions
 
