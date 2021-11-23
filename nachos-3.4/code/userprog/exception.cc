@@ -60,6 +60,24 @@ void dummy(int arg){
     machine->Run();
 }
 
+/* PROJECT 3 Section */
+void write(){
+}
+
+void open(){
+}
+
+void read(){
+}
+
+void close(){
+}
+
+void create(){
+}
+
+
+/* PROJECT 2 Section */
 void fork(){
     printf("System Call: [%d] invoked Fork\n", currentThread->space->pcb->getID());
     // 1. Save old process registers.
@@ -280,7 +298,33 @@ ExceptionHandler(ExceptionType which)
     /* Make System Calls*/
     if ((which == SyscallException)){
         switch(type){
-            /*FIXME: Make edits to each system call to work successfully*/
+            /*FIXME: PROJECT 3 - Implement System Calls for Open, Read, Write, Close, Create*/
+            case SC_Open:
+                DEBUG('a', "Open, initiated by user program.\n");
+               	//open(); 
+                break;
+			
+            case SC_Read:
+                DEBUG('a', "Read, initiated by user program.\n");
+                //read(); 
+                break;
+			
+            case SC_Write:
+                DEBUG('a', "Write, initiated by user program.\n");
+                //write(); 
+                break;	
+			
+            case SC_Close:
+                DEBUG('a', "Close, initiated by user program.\n");
+                //close(); 
+                break;
+			
+            case SC_Create:
+                DEBUG('a', "Create, initiated by user program.\n");
+                //create(); 
+                break;
+			
+	    /* PROJECT 2 - Fork, Yield, Exec, Join, Kill, Exit */
             case SC_Fork:
                 DEBUG('a', "Fork, initiated by user program.\n");
                 fork();
